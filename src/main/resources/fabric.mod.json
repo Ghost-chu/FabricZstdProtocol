@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "fabriczstdprotocol",
+  "version": "${version}",
+  "name": "FabricZSTDProtocol",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/Ghost-chu/FabricZSTDProtocolstomClientDNS"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/fabriczstdprotocol/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.ghostchu.mods.fabriczstdprotocol.client.FabricZSTDProtocolClient"
+    ],
+    "main": [
+      "com.ghostchu.mods.fabriczstdprotocol.FabricZSTDProtocol"
+    ]
+  },
+  "mixins": [
+    "fabriczstdprotocol.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
