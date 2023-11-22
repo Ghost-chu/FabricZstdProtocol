@@ -1,6 +1,6 @@
 package com.ghostchu.mods.fabriczstdprotocol.pkthandler;
 
-import com.github.luben.zstd.Zstd;
+import com.github.luben.zstd.ZstdDecompressCtx;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,6 +15,7 @@ public class ZstdPacketInflater extends ByteToMessageDecoder {
     public static final int MAXIMUM_PACKET_SIZE = 8388608;
     private int compressionThreshold;
     private boolean rejectsBadPackets;
+    private ZstdDecompressCtx decompressCtx;
 
     public ZstdPacketInflater(int compressionThreshold, boolean rejectsBadPackets) {
         this.compressionThreshold = compressionThreshold;
@@ -37,7 +38,11 @@ public class ZstdPacketInflater extends ByteToMessageDecoder {
                         throw new DecoderException("Badly compressed packet - size of " + i + " is larger than protocol maximum of 8388608");
                     }
                 }
-                objects.add(Unpooled.wrappedBuffer(Zstd.decompress(buf.nioBuffer(), i)));
+                try {
+                    objects.add(Unpooled.wrappedBuffer(decompressCtx.decompress(buf.nioBuffer(),i)));
+                }finally {
+                    decompressCtx.reset();
+                }
             }
         }
     }

@@ -17,13 +17,13 @@ import net.minecraft.util.Identifier;
 public class FabricZSTDProtocolClient implements ClientModInitializer {
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final Identifier PKT_ID = new Identifier("fabriczstdprotocol", "handshake");
-
+    public static FabricZSTDProtocolClient INSTANCE;
     /**
      * Runs the mod initializer on the client environment.
      */
     @Override
     public void onInitializeClient() {
-
+        INSTANCE = this;
     }
 
 
