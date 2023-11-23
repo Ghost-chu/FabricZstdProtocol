@@ -3,20 +3,15 @@ package com.ghostchu.mods.fabriczstdprotocol.client;
 import com.ghostchu.mods.fabriczstdprotocol.mixin.ClientConnectionAccessor;
 import com.ghostchu.mods.fabriczstdprotocol.pkthandler.ZstdPacketDeflater;
 import com.ghostchu.mods.fabriczstdprotocol.pkthandler.ZstdPacketInflater;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.netty.channel.Channel;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.handler.PacketDeflater;
 import net.minecraft.network.handler.PacketInflater;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FabricZSTDProtocolClient implements ClientModInitializer {
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
-    private static final Identifier PKT_ID = new Identifier("fabriczstdprotocol", "handshake");
     public static FabricZSTDProtocolClient INSTANCE;
     private static final Logger LOGGER = LoggerFactory.getLogger("FabricZSTDProtocolClient");
 
@@ -29,7 +24,7 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
     }
 
 
-    public void changeEncoderDecoderToZstdVersion(int compressionThreshold, int level, ClientConnection clientConnection) {
+    public void changeEncoderDecoderToZstdVersion(int compressionThreshold, int level, byte[] dict, ClientConnection clientConnection) {
         LOGGER.info("Selected connection: " + clientConnection);
         ClientConnectionAccessor accessor = (ClientConnectionAccessor) clientConnection;
         Channel channel = accessor.getChannel();
@@ -40,7 +35,7 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
             channel.pipeline().remove("compress");
         }
         channel.pipeline().addBefore("decoder", "decompress", new ZstdPacketInflater(compressionThreshold, false));
-        channel.pipeline().addBefore("encoder", "compress", new ZstdPacketDeflater(compressionThreshold));
+        channel.pipeline().addBefore("encoder", "compress", new ZstdPacketDeflater(compressionThreshold, level, dict));
     }
 
     public void printChannelHandlers(ClientConnection connection) {

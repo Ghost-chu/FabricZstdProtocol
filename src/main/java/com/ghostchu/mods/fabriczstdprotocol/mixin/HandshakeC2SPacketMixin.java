@@ -28,19 +28,13 @@ public class HandshakeC2SPacketMixin {
     private ConnectionIntent intendedState;
     private static final Logger LOGGER = LoggerFactory.getLogger("HandshakeC2SPacketMixin");
 
-    @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V", at = @At("TAIL"))
-    public void init(PacketByteBuf buf, CallbackInfo ci) {
-
-        LOGGER.info("Received server Handshake response!");
-    }
-
     @Inject(method = "write", at = @At("HEAD"), cancellable = true)
     public void write(PacketByteBuf buf, CallbackInfo ci) {
         buf.writeVarInt(protocolVersion);
         buf.writeString(address + "\0zstd-protocol");
         buf.writeShort(port);
         buf.writeVarInt(intendedState.getId());
-        LOGGER.info("Appended zstd-protocol-request at the string tail.");
+        LOGGER.info("[Handshake Trick] Appended zstd-protocol-request at the host string tail.");
         ci.cancel();
     }
 }

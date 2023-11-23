@@ -25,11 +25,12 @@ public class ClientLoginNetworkHandlerMixin {
         if (!connection.isLocal()) {
             FabricZSTDProtocolClient.INSTANCE.printChannelHandlers(connection);
             if (packet.isZstd()) {
-                FabricZSTDProtocolClient.INSTANCE.changeEncoderDecoderToZstdVersion(packet.getCompressionThreshold(), packet.getCompressionLevel(), connection);
-                LOGGER.info("Changed connection {} to Zstd protocol...", connection);
+                LOGGER.info("Server -> You need apply the Zstd protocol profile: CompressionThreshold = {}, CompressionLevel = {}, ZstdDict = ({} bytes)", packet.getCompressionThreshold(), packet.getCompressionLevel(), packet.getDict().length);
+                FabricZSTDProtocolClient.INSTANCE.changeEncoderDecoderToZstdVersion(packet.getCompressionThreshold(), packet.getCompressionLevel(), packet.getDict(), connection);
+                LOGGER.info("Changed connection {} to Zstd protocol, Nice!", connection);
             } else {
                 FabricZSTDProtocolClient.INSTANCE.changeEncoderDecoderToGzipVersion(packet.getCompressionThreshold(), connection);
-                LOGGER.info("Changed connection {} to Gzip protocol...", connection);
+                LOGGER.info("Changed connection {} to Gzip protocol, Server unsupported?", connection);
             }
             FabricZSTDProtocolClient.INSTANCE.printChannelHandlers(this.connection);
         }

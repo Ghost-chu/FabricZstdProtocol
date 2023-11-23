@@ -10,4 +10,8 @@ public interface LoginCompressionS2CPacketGetter {
     default int getCompressionLevel() {
         throw new NotImplementedException();
     }
+
+    default byte[] getDict(){
+        throw new NotImplementedException();
+    }
 }
