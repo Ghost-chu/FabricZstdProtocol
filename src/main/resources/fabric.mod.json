@@ -26,5 +26,12 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}"
+  },
+  "accessWidener": "fabriczstdprotocol.accesswidener",
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2907":
+      ["com/ghostchu/mods/fabriczstdprotocol/mixingetter/LoginCompressionS2CPacketGetter"]
+    }
   }
 }

@@ -1,6 +1,6 @@
 package com.ghostchu.mods.fabriczstdprotocol.mixin;
 
-import com.ghostchu.mods.fabriczstdprotocol.client.FabricZSTDProtocolClient;
+import com.ghostchu.mods.fabriczstdprotocol.mixingetter.LoginCompressionS2CPacketGetter;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketByteBuf;
 import org.slf4j.Logger;
@@ -13,29 +13,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(net.minecraft.network.packet.s2c.login.LoginCompressionS2CPacket.class)
-public class LoginCompressionC2SPacketMixin {
-    @Shadow @Final private int compressionThreshold;
+public class LoginCompressionS2CPacket implements LoginCompressionS2CPacketGetter {
+    private static final Logger LOGGER = LoggerFactory.getLogger("LoginCompressionS2CPacketMixin");
+    @Shadow
+    @Final
+    private int compressionThreshold;
     private boolean zstd = false;
     private int level = Integer.MIN_VALUE;
-    private static final Logger LOGGER = LoggerFactory.getLogger("LoginCompressionS2CPacketMixin");
-    @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V", at = @At("TAIL"))
-    public void init(PacketByteBuf buf, CallbackInfo ci){
-        this.zstd = readVarIntSafely(buf) == 1;
-        this.level = readVarIntSafely(buf);
-        if(this.zstd){
-            FabricZSTDProtocolClient.INSTANCE.changeEncoderDecoderToZstdVersion(compressionThreshold, level);
-            LOGGER.info("Server response ACK! Switched to ZSTD protocol!");
-        }
-    }
-
-    @Inject(method = "write", at = @At("TAIL"))
-    public void write(PacketByteBuf buf, CallbackInfo ci){
-        buf.writeVarInt(this.zstd ? 1 : 0);
-        buf.writeVarInt(this.level);
-        LOGGER.info("Request server to use Zstd protocol");
-    }
-
-
 
     private static int readVarIntSafely(ByteBuf buf) {
         int i = 0;
@@ -48,5 +32,17 @@ public class LoginCompressionC2SPacketMixin {
             }
         }
         return Integer.MIN_VALUE;
+    }
+
+    @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V", at = @At("TAIL"))
+    public void init(PacketByteBuf buf, CallbackInfo ci) {
+        this.zstd = readVarIntSafely(buf) == 1;
+        if (this.zstd) {
+            LOGGER.info("Server use Zstd response ACK!");
+        }
+    }
+    @Override
+    public boolean isZstd() {
+        return zstd;
     }
 }

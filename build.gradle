@@ -65,6 +65,10 @@ java {
     withSourcesJar()
 }
 
+loom{
+    accessWidenerPath = file("src/main/resources/fabriczstdprotocol.accesswidener")
+}
+
 jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}"}

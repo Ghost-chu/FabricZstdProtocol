@@ -7,7 +7,8 @@
     "ClientConnectionAccessor",
     "ClientConnectionMixin",
     "HandshakeC2SPacketMixin",
-    "LoginCompressionS2CPacketMixin"
+    "LoginCompressionS2CPacket",
+    "ClientLoginNetworkHandlerMixin"
   ],
   "client": [
   ],
