@@ -5,8 +5,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.minecraft.network.encoding.VarInts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZstdPacketDeflater extends MessageToByteEncoder<ByteBuf> {
+    private static final Logger LOGGER = LoggerFactory.getLogger("ZstdPacketDeflater");
     private final ZstdCompressCtx compressCtx;
     private int compressionThreshold;
 
@@ -15,8 +18,10 @@ public class ZstdPacketDeflater extends MessageToByteEncoder<ByteBuf> {
         this.compressCtx = new ZstdCompressCtx();
         this.compressCtx.setLevel(level);
         if (dict != null && dict.length > 0) {
+            LOGGER.info("Server sent the Zstd dict, installing it!");
             this.compressCtx.loadDict(dict);
         } else {
+            LOGGER.info("Didn't receive the dict from server, fallback to zstd default.");
             this.compressCtx.loadDict((byte[]) null);
         }
     }

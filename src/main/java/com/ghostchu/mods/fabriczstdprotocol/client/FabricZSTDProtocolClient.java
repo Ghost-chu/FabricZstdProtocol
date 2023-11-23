@@ -25,7 +25,7 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
 
 
     public void changeEncoderDecoderToZstdVersion(int compressionThreshold, int level, byte[] dict, ClientConnection clientConnection) {
-        LOGGER.info("Selected connection: " + clientConnection);
+        LOGGER.debug("Selected connection: " + clientConnection);
         ClientConnectionAccessor accessor = (ClientConnectionAccessor) clientConnection;
         Channel channel = accessor.getChannel();
         if (channel.pipeline().get("decompress") instanceof PacketInflater) {
@@ -40,17 +40,15 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
 
     public void printChannelHandlers(ClientConnection connection) {
         if (connection == null) {
-            LOGGER.info("ClientConnection is null");
             return;
         }
         ClientConnectionAccessor accessor = ((ClientConnectionAccessor) connection);
         Channel channel = accessor.getChannel();
-        LOGGER.info("Print!");
-        channel.pipeline().toMap().forEach((k, v) -> LOGGER.info("Pipeline Handler: [" + k + "] -> " + v.getClass().getName()));
+        channel.pipeline().toMap().forEach((k, v) -> LOGGER.debug("Pipeline Handler: [" + k + "] -> " + v.getClass().getName()));
     }
 
     public void changeEncoderDecoderToGzipVersion(int compressionThreshold, ClientConnection clientConnection) {
-        LOGGER.info("Selected connection: " + clientConnection);
+        LOGGER.debug("Selected connection: " + clientConnection);
         ClientConnectionAccessor accessor = ((ClientConnectionAccessor) clientConnection);
         Channel channel = accessor.getChannel();
         if (channel.pipeline().get("decompress") instanceof PacketInflater) {
