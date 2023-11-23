@@ -12,15 +12,15 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import net.minecraft.network.encoding.VarInts;
 
 public class ZstdPacketDeflater extends MessageToByteEncoder<ByteBuf> {
-  //  private final byte[] deflateBuffer = new byte[8192];
-   // private final Deflater deflater;
+    //  private final byte[] deflateBuffer = new byte[8192];
+    // private final Deflater deflater;
     private int compressionThreshold;
 
     private ZstdCompressCtx compressCtx;
 
     public ZstdPacketDeflater(int compressionThreshold) {
         this.compressionThreshold = compressionThreshold;
-    //    this.deflater = new Deflater();
+        //    this.deflater = new Deflater();
         this.compressCtx = new ZstdCompressCtx();
     }
 
@@ -34,14 +34,14 @@ public class ZstdPacketDeflater extends MessageToByteEncoder<ByteBuf> {
             byteBuf.readBytes(bs);
             VarInts.write(byteBuf2, bs.length);
             byte[] targetData = new byte[i];
-            System.arraycopy(bs,0,targetData,0,i);
+            System.arraycopy(bs, 0, targetData, 0, i);
             byteBuf2.writeBytes(compressCtx.compress(targetData));
 //            while(!this.deflater.finished()) {
 //                int j = this.deflater.deflate(this.deflateBuffer);
 //                byteBuf2.writeBytes(this.deflateBuffer, 0, j);
 //            }
 
-    //        this.deflater.reset();
+            //        this.deflater.reset();
         }
 
     }

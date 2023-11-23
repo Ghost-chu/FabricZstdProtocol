@@ -19,6 +19,7 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
     private static final Identifier PKT_ID = new Identifier("fabriczstdprotocol", "handshake");
     public static FabricZSTDProtocolClient INSTANCE;
     private static final Logger LOGGER = LoggerFactory.getLogger("FabricZSTDProtocolClient");
+
     /**
      * Runs the mod initializer on the client environment.
      */
@@ -29,7 +30,7 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
 
 
     public void changeEncoderDecoderToZstdVersion(int compressionThreshold, int level, ClientConnection clientConnection) {
-        LOGGER.info("Selected connection: "+clientConnection);
+        LOGGER.info("Selected connection: " + clientConnection);
         ClientConnectionAccessor accessor = (ClientConnectionAccessor) clientConnection;
         Channel channel = accessor.getChannel();
         if (channel.pipeline().get("decompress") instanceof PacketInflater) {
@@ -42,7 +43,7 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
         channel.pipeline().addBefore("encoder", "compress", new ZstdPacketDeflater(compressionThreshold));
     }
 
-    public void printChannelHandlers(ClientConnection connection){
+    public void printChannelHandlers(ClientConnection connection) {
         if (connection == null) {
             LOGGER.info("ClientConnection is null");
             return;
@@ -50,11 +51,11 @@ public class FabricZSTDProtocolClient implements ClientModInitializer {
         ClientConnectionAccessor accessor = ((ClientConnectionAccessor) connection);
         Channel channel = accessor.getChannel();
         LOGGER.info("Print!");
-        channel.pipeline().toMap().forEach((k,v)-> LOGGER.info("Pipeline Handler: ["+k+"] -> "+v.getClass().getName()));
+        channel.pipeline().toMap().forEach((k, v) -> LOGGER.info("Pipeline Handler: [" + k + "] -> " + v.getClass().getName()));
     }
 
     public void changeEncoderDecoderToGzipVersion(int compressionThreshold, ClientConnection clientConnection) {
-        LOGGER.info("Selected connection: "+clientConnection);
+        LOGGER.info("Selected connection: " + clientConnection);
         ClientConnectionAccessor accessor = ((ClientConnectionAccessor) clientConnection);
         Channel channel = accessor.getChannel();
         if (channel.pipeline().get("decompress") instanceof PacketInflater) {

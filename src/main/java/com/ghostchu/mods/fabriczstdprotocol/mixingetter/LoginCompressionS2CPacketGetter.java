@@ -6,4 +6,8 @@ public interface LoginCompressionS2CPacketGetter {
     default boolean isZstd() {
         throw new NotImplementedException();
     }
+
+    default int getCompressionLevel() {
+        throw new NotImplementedException();
+    }
 }

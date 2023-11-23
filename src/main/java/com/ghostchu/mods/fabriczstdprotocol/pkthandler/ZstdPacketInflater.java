@@ -21,7 +21,7 @@ public class ZstdPacketInflater
      * The maximum size allowed for a compressed packet. Has value {@value}.
      */
     public static final int MAXIMUM_PACKET_SIZE = 0x800000;
-   // private final Inflater inflater;
+    // private final Inflater inflater;
     private int compressionThreshold;
     private boolean rejectsBadPackets;
     private ZstdDecompressCtx decompressCtx;

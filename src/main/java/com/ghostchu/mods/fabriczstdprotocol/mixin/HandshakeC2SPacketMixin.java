@@ -14,20 +14,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandshakeC2SPacket.class)
 public class HandshakeC2SPacketMixin {
-    @Shadow @Final private int protocolVersion;
-    @Shadow @Final private String address;
-    @Shadow @Final private int port;
-    @Shadow @Final private ConnectionIntent intendedState;
+    @Shadow
+    @Final
+    private int protocolVersion;
+    @Shadow
+    @Final
+    private String address;
+    @Shadow
+    @Final
+    private int port;
+    @Shadow
+    @Final
+    private ConnectionIntent intendedState;
     private static final Logger LOGGER = LoggerFactory.getLogger("HandshakeC2SPacketMixin");
+
     @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V", at = @At("TAIL"))
-    public void init(PacketByteBuf buf, CallbackInfo ci){
+    public void init(PacketByteBuf buf, CallbackInfo ci) {
 
         LOGGER.info("Received server Handshake response!");
     }
+
     @Inject(method = "write", at = @At("HEAD"), cancellable = true)
-    public void write(PacketByteBuf buf, CallbackInfo ci){
+    public void write(PacketByteBuf buf, CallbackInfo ci) {
         buf.writeVarInt(protocolVersion);
-        buf.writeString(address+"\0zstd-protocol");
+        buf.writeString(address + "\0zstd-protocol");
         buf.writeShort(port);
         buf.writeVarInt(intendedState.getId());
         LOGGER.info("Appended zstd-protocol-request at the string tail.");

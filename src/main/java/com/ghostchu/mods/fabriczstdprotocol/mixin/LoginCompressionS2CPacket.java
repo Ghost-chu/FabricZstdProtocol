@@ -19,7 +19,7 @@ public class LoginCompressionS2CPacket implements LoginCompressionS2CPacketGette
     @Final
     private int compressionThreshold;
     private boolean zstd = false;
-    private int level = Integer.MIN_VALUE;
+    private int level = -1;
 
     private static int readVarIntSafely(ByteBuf buf) {
         int i = 0;
@@ -38,11 +38,18 @@ public class LoginCompressionS2CPacket implements LoginCompressionS2CPacketGette
     public void init(PacketByteBuf buf, CallbackInfo ci) {
         this.zstd = readVarIntSafely(buf) == 1;
         if (this.zstd) {
-            LOGGER.info("Server use Zstd response ACK!");
+            this.level = readVarIntSafely(buf);
+            LOGGER.info("Server accepted the client Zstd protocol switch request.");
         }
     }
+
     @Override
     public boolean isZstd() {
         return zstd;
+    }
+
+    @Override
+    public int getCompressionLevel() {
+        return this.level;
     }
 }
